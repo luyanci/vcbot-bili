@@ -12,6 +12,7 @@ jobs:
             fail-fast: false
             matrix:
                 os: [macos-latest,ubuntu-latest,windows-latest,macos-13]
+                builder: [pyinstaller,nuitka]
         runs-on: ${{matrix.os}}
         steps:
         - uses: actions/checkout@v4
@@ -25,15 +26,30 @@ jobs:
           if: ${{runner.os == 'Linux'}}
           uses: awalsh128/cache-apt-pkgs-action@latest 
           with: 
-            packages: python-tk 
+            packages: python-tk build-essential
             execute_install_scripts: true
         - name: Install dependencies
           run: pip install -r requirements.txt
-        - name: Build
+        - name: Install nuitka
+          if: ${{matrix.builder == 'nuitka'}}
+          run: pip install nuitka imageio tk-inter
+        - name: Build with pyinstaller
+          if: ${{matrix.builder == 'pyinstaller'}}
           run: pyinstaller -F --hidden-import=PIL._tkinter_finder --additional-hooks-dir=hooks main.py -n vcbot-bili -i .res/icon.ico
+        - name: Build with nuitka
+          if: ${{matrix.builder == 'nuitka'}}
+          run: python3 -m nuitka --onefile --standalone --enable-plugin=tk-inter --remove-output --output-dir=dist  --windows-icon-from-ico=.res/icon.ico main.py
         - name: pack
+          if: ${{matrix.builder == 'pyinstaller'}}
           run: 7z a -tzip build-${{matrix.os}}.zip ./dist
-        - name: Upload
+        - name: Upload(pyinstaller)
+          if: ${{matrix.builder == 'pyinstaller'}}
+          uses: actions/upload-artifact@v4
+          with: 
+            name: build-${{matrix.os}}
+            path: ./build-${{matrix.os}}.zip
+        - name: Upload(nuitka)
+          if: ${{matrix.builder == 'nuitka'}}
           uses: actions/upload-artifact@v4
           with: 
             name: build-${{matrix.os}}
