@@ -32,7 +32,7 @@ jobs:
           run: pip install -r requirements.txt
         - name: Install nuitka
           if: ${{matrix.builder == 'nuitka'}}
-          run: pip install nuitka
+          run: pip install nuitka imageio
         - name: Build with pyinstaller
           if: ${{matrix.builder == 'pyinstaller'}}
           run: pyinstaller -F --hidden-import=PIL._tkinter_finder --additional-hooks-dir=hooks main.py -n vcbot-bili -i .res/icon.ico
