@@ -3,7 +3,7 @@ import json
 import datetime
 from loguru import logger
 from bilibili_api import Credential,sync
-from plugins.libs import user,live,config
+from plugins.libs import user,live,config,base
 from plugins import content,ignore,schedule,at,blind
 
 def login():
@@ -45,7 +45,7 @@ def main():
     async def on_guard(event):
         # 上舰长/提督/总督
         logger.debug(json.dumps(event,ensure_ascii=False))
-        text=content.get_danmaku_on_buyguard(event=event)
+        text=base.get_danmaku_on_buyguard(event=event)
         await live.send_danmu(text=text)
 
 
@@ -54,8 +54,7 @@ def main():
     async def on_danmaku(event):
         # 收到弹幕.
         text=""
-        
-        if str(event['data']['info'][2][0]) == user.bot_uid:
+        if event['data']['info'][2][0] == user.bot_uid:
             #这里不写log，防止刷日志
             return
         
@@ -64,7 +63,6 @@ def main():
             logger.info('The danmaku has @user,reminded.')
             return
         
-
         try:
             text=content.get_danmaku_content(event=event)
         except BaseException as e:
@@ -96,9 +94,9 @@ def main():
         
         types=event['data']['data']['msg_type'] #判断是关注还是进入
         if types == 1:
-            text=content.get_danmaku_on_wuser(event=event)
+            text=base.get_danmaku_on_wuser(event=event)
         if types == 2:
-            text=content.get_danmaku_on_user_followed(event=event)
+            text=base.get_danmaku_on_user_followed(event=event)
         if text == "":
             return
         await live.send_danmu(text=text)
@@ -111,9 +109,8 @@ def main():
         
         if event['data']['data']['blind_gift'] != None:
             await blind.on_blind(event=event)
-            logger.info('The gift was blind gift,it will replace.')
             return
-        text = content.get_danmaku_on_gift(event=event)
+        text = base.get_danmaku_on_gift(event=event)
         await live.send_danmu(text=text)
         
 

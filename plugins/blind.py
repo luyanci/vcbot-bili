@@ -1,6 +1,14 @@
-from .libs import live
+from loguru import logger
+from . import content
+from .libs import live,config
 
 async def on_blind(event:str):
+    if config.roomcfg['chat']['global']['plugins']['blind'] is not True:
+        final_text = content.get_danmaku_on_gift(event=event)
+        await live.send_danmu(text=final_text)
+        logger.info('The gift was blind gift,it will replace.')
+        return 
+
     blind=event['data']['data']['blind_gift']
     origin_gift=blind['original_gift_name']
     price=int(blind['original_gift_price'])/1000 #int后转成金额

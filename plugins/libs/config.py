@@ -3,7 +3,7 @@ import json
 from loguru import logger
 from dotenv import load_dotenv
 
-default={'connected': '连接成功!', 'chat': {'global': {'schedule': [{'minute': 30, 'content': '主包记得喝水！'}, {'minute': 15, 'content': '关注上舰送灯牌，寻找主包不迷路～'}], 'events': {'reply_notice': ' {user} 回复 {re-user} : {content} ', 'welcome': '欢迎 {user} 进入直播间', 'gifts': '谢谢 {user} 的 {gift} 喵～', 'guard': '感谢 {user} 开通 {type} 喵～', 'followed': '感谢 {user} 的关注喵～'}, 'command': {'about-rule': 'default rule v1.0', 'about': 'vcbot-bili v0.1.3 Made by@luyanci'}}, '282873551': {'command': {'debug': 'vcbot-bili with default rule'}}}}
+default={'chat': {'282873551': {'command': {'debug': 'vcbot-bili with default rule'}}, 'global': {'command': {'about': 'vcbot-bili v0.1.3 by VCBots', 'about-rule': 'default rule v1.0'}, 'plugins': {'at': True, 'blind': True, 'followed': True, 'gift': True, 'guard': True, 'welcome': True}, 'schedule': [{'content': '主包记得喝水！', 'minute': 30}, {'content': '关注上舰送灯牌，寻找主包不迷路～', 'minute': 15}]}}, 'connected': '连接成功!'}
 
 def loadroomcfg():
     load_dotenv(dotenv_path="./.env")
