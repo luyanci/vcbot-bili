@@ -38,7 +38,7 @@ jobs:
           run: pyinstaller -F --hidden-import=PIL._tkinter_finder --additional-hooks-dir=hooks main.py -n vcbot-bili -i .res/icon.ico
         - name: Build with nuitka
           if: ${{matrix.builder == 'nuitka'}}
-          run: python3 -m nuitka --onefile --standalone --enable-plugin=tk-inter --recurse-all --remove-output --output-dir=dist  --windows-icon-from-ico=.res/icon.ico main.py
+          run: python3 -m nuitka --onefile --standalone --enable-plugin=tk-inter --remove-output --output-dir=dist  --windows-icon-from-ico=.res/icon.ico main.py
         - name: pack
           if: ${{matrix.builder == 'pyinstaller'}}
           run: 7z a -tzip build-${{matrix.os}}.zip ./dist
